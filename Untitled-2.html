@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painel de Administração - Super Mercado Bem</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{
+      --bg1: #071126;
+      --bg2: #0f2440;
+      --glass: rgba(255,255,255,0.06);
+      --accent1: #ffb86b; /* Amarelo/Laranja */
+      --accent2: #7ee7c0; /* Verde/Ciano */
+      --muted: #c7d2fe;
+      --button-bg: #4f46e5; /* Cor primária (Indigo) */
+      --secondary-button-bg: #374151; /* Cinza para o botão de cadastro/sair */
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    /* Layout do Painel */
+    .admin-container {
+      width: 95%;
+      height: 95%;
+      max-width: 1400px;
+      max-height: 900px;
+      border-radius: 20px;
+      background: var(--bg2);
+      box-shadow: 0 20px 60px rgba(2,6,23,0.6);
+      display: flex;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Sidebar de Navegação */
+    .sidebar {
+      width: 250px;
+      background: var(--bg1);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 10px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .sidebar .logo {
+        margin-bottom: 40px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 200ms ease;
+    }
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: white;
+    }
+    .nav-item.active {
+      background: var(--button-bg);
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .nav-item i {
+      margin-right: 15px;
+      font-size: 18px;
+    }
+
+    /* Área de Conteúdo Principal */
+    .main-content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    /* Estilos de Abas */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+    }
+
+    /* Estilos de Formulário */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--bg1);
+      color: white;
+      outline: none;
+      font-size: 16px;
+    }
+    .form-group textarea {
+        min-height: 100px;
+    }
+
+    /* Botões */
+    .action-button {
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      transition: all 200ms ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .primary-button {
+        background: var(--button-bg);
+        color: white;
+    }
+    .primary-button:hover {
+        background: #6366f1;
+        transform: translateY(-1px);
+    }
+    .secondary-button {
+        background: var(--secondary-button-bg);
+        color: var(--muted);
+    }
+    .secondary-button:hover {
+        background: #4b5563;
+    }
+
+    /* Estilos de Tabela */
+    .data-list, .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .data-list th, .data-table th {
+        background: var(--secondary-button-bg);
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+    .data-list td, .data-table td {
+        background: var(--bg1);
+        padding: 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: var(--muted);
+    }
+    .data-list tr:last-child td {
+        border-bottom: none;
+    }
+    .tag-style {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(126,231,192,0.15);
+        color: var(--accent2);
+    }
+
+    /* Tela de Login */
+    .login-container {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .login-box {
+        width: 400px;
+        padding: 40px;
+        background: var(--bg2);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        text-align: center;
+    }
+    .login-box h1 {
+        color: var(--accent1);
+        margin-bottom: 30px;
+        font-size: 24px;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="login-screen" class="login-container">
+    <div class="login-box">
+      <h1><i class="fas fa-lock"></i> Acesso Administrativo</h1>
+      <div class="form-group">
+        <input type="text" id="admin-user" placeholder="Usuário (admin)" value="admin">
+      </div>
+      <div class="form-group">
+        <input type="password" id="admin-pass" placeholder="Senha (senha123)" value="senha123">
+      </div>
+      <button class="action-button primary-button w-full" onclick="handleAdminLogin()">
+        Entrar no Painel
+      </button>
+    </div>
+  </div>
+
+  <div id="main-panel" class="admin-container" style="display: none;">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="text" style="font-size: 24px; color: var(--accent2);">Admin</div>
+        <div style="font-size: 12px; color: var(--muted);">Supermercado Escola</div>
+      </div>
+
+      <nav>
+        <div id="nav-products" class="nav-item active" onclick="switchTab('products')">
+          <i class="fas fa-box-open"></i> Gestão de Produtos
+        </div>
+        <div id="nav-quiz" class="nav-item" onclick="switchTab('quiz')">
+          <i class="fas fa-question-circle"></i> Gestão do Quiz UFV
+        </div>
+        <div id="nav-resgates" class="nav-item" onclick="switchTab('resgates')">
+          <i class="fas fa-trophy"></i> Histórico de Resgates
+        </div>
+      </nav>
+      
+      <div style="margin-top: auto;">
+        <div class="nav-item" style="color: #ef4444;" onclick="handleAdminLogout()">
+          <i class="fas fa-sign-out-alt"></i> Sair
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      
+      <!-- 1. Gestão de Produtos -->
+      <div id="products-tab" class="tab-content active">
+        <h2><i class="fas fa-box-open"></i> Gestão de Produtos Promocionais</h2>
+        
+        <form id="product-form" onsubmit="event.preventDefault(); addProduct();" style="background: var(--bg1); padding: 30px; border-radius: 12px; margin-bottom: 30px;">
+            <h3 style="color: var(--accent1); margin-bottom: 20px; font-weight: 600;">Adicionar Novo Produto</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="product-name">Nome do Produto</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-tag">Tag (Ex: Economize, Popular)</label>
+                    <input type="text" id="product-tag" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-price-new">Preço Atual (Ex: 19,90)</label>
+                    <input type="text" id="product-price-new" required pattern="[0-9,.]+" title="Apenas números e vírgula/ponto.">
+                </div>
+                <div class="form-group">
+                    <label for="product-price-old">Preço Antigo (Ex: 29,90)</label>
+                    <input type="text" id="product-price-old" pattern="[0-9,.]+" title="Apenas números e vírgula/ponto.">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="product-img">URL da Imagem (Link direto)</label>
+                <input type="url" id="product-img" required>
+            </div>
+            <div class="form-group">
+                <label for="product-desc">Descrição</label>
+                <textarea id="product-desc" required></textarea>
+            </div>
+            <button type="submit" class="action-button primary-button">
+                <i class="fas fa-plus"></i> Adicionar Produto
+            </button>
+        </form>
+
+        <h3 style="color: var(--muted); margin-bottom: 15px; font-weight: 600;">Produtos Atuais</h3>
+        <table class="data-list">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Tag</th>
+                    <th>Preço Novo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="product-list">
+                <!-- Dados injetados aqui -->
+            </tbody>
+        </table>
+      </div>
+
+      <!-- 2. Gestão do Quiz -->
+      <div id="quiz-tab" class="tab-content">
+        <h2><i class="fas fa-question-circle"></i> Gestão de Perguntas do Quiz UFV</h2>
+        
+        <form id="quiz-form" onsubmit="event.preventDefault(); addQuizQuestion();" style="background: var(--bg1); padding: 30px; border-radius: 12px; margin-bottom: 30px;">
+            <h3 style="color: var(--accent1); margin-bottom: 20px; font-weight: 600;">Adicionar Nova Pergunta</h3>
+            <div class="form-group">
+                <label for="quiz-question">Pergunta</label>
+                <input type="text" id="quiz-question" required>
+            </div>
+            <div class="form-group">
+                <label for="quiz-option-A">Opção A</label>
+                <input type="text" id="quiz-option-A" required>
+            </div>
+            <div class="form-group">
+                <label for="quiz-option-B">Opção B</label>
+                <input type="text" id="quiz-option-B" required>
+            </div>
+             <div class="form-group">
+                <label for="quiz-option-C">Opção C</label>
+                <input type="text" id="quiz-option-C" required>
+            </div>
+             <div class="form-group">
+                <label for="quiz-option-D">Opção D</label>
+                <input type="text" id="quiz-option-D" required>
+            </div>
+            <div class="form-group">
+                <label for="quiz-correct-index">Índice da Resposta Correta (0=A, 1=B, 2=C, 3=D)</label>
+                <select id="quiz-correct-index" required>
+                    <option value="0">A</option>
+                    <option value="1">B</option>
+                    <option value="2">C</option>
+                    <option value="3">D</option>
+                </select>
+            </div>
+            <button type="submit" class="action-button primary-button">
+                <i class="fas fa-plus"></i> Adicionar Pergunta
+            </button>
+        </form>
+
+        <h3 style="color: var(--muted); margin-bottom: 15px; font-weight: 600;">Perguntas Atuais</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Pergunta</th>
+                    <th>Resposta Correta</th>
+                </tr>
+            </thead>
+            <tbody id="quiz-list">
+                <!-- Dados injetados aqui -->
+            </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Histórico de Resgates -->
+      <div id="resgates-tab" class="tab-content">
+        <h2><i class="fas fa-trophy"></i> Histórico de Resgates</h2>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>CPF (Parcial)</th>
+                    <th>Prêmio Resgatado</th>
+                    <th>Custo (pts)</th>
+                    <th>Voucher</th>
+                </tr>
+            </thead>
+            <tbody id="resgate-list">
+                <!-- Dados injetados aqui -->
+            </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Dados de exemplo (mantidos em variáveis locais por enquanto)
+    let products = [
+      { id: 'p1', name: 'Arroz Tipo 1 — 5kg', tag: 'Economize', priceNew: '19,90', priceOld: '29,90', img: 'https://images.unsplash.com/photo-1586201375759-81bb72c45611?auto=format&fit=crop&w=1200&q=70', desc: 'Arroz branco polido, cozimento perfeito. Promoção por tempo limitado.' },
+      { id: 'p2', name: 'Café Torrado 500g', tag: 'Popular', priceNew: '12,50', priceOld: '18,50', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=70', desc: 'Sabor encorpado, moagem ideal para coador e café expresso.' }
+    ];
+
+    let ufvQuizData = [
+      { question: "Em quantos campi a UFV oferece cursos?", options: ["Um", "Dois", "Três", "Quatro"], correctIndex: 2 },
+      { question: "Qual o nome do Colégio de Aplicação da UFV?", options: ["Coltec", "Coluni", "CAp", "CEFET"], correctIndex: 1 }
+    ];
+    
+    let resgatesHistory = [
+      { date: '12/11/2025 14:30', cpf: '001.***.**-**', premio: 'Caneca UFV', cost: 2500, voucher: '555-R3-901' },
+      { date: '12/11/2025 15:45', cpf: '002.***.**-**', premio: 'Vale Desconto 10%', cost: 1200, voucher: '123-R1-456' }
+    ];
+
+    const currentCorrectOptions = ['A', 'B', 'C', 'D'];
+
+    // --- Elementos ---
+    const loginScreen = document.getElementById('login-screen');
+    const mainPanel = document.getElementById('main-panel');
+    const productListBody = document.getElementById('product-list');
+    const quizListBody = document.getElementById('quiz-list');
+    const resgateListBody = document.getElementById('resgate-list');
+
+    // --- Funções de Login e Logout ---
+
+    function handleAdminLogin() {
+      const user = document.getElementById('admin-user').value;
+      const pass = document.getElementById('admin-pass').value;
+
+      if (user === 'admin' && pass === 'senha123') {
+        loginScreen.style.display = 'none';
+        mainPanel.style.display = 'flex';
+        // Inicializa a primeira aba
+        switchTab('products');
+      } else {
+        alert('Usuário ou senha inválidos.');
+      }
+    }
+
+    function handleAdminLogout() {
+      mainPanel.style.display = 'none';
+      loginScreen.style.display = 'flex';
+    }
+
+    // --- Funções de Navegação e Renderização ---
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+      const targetTab = document.getElementById(`${tabId}-tab`);
+      const targetNav = document.getElementById(`nav-${tabId}`);
+      
+      // CRÍTICO: Verificar se os elementos existem antes de manipular.
+      if (!targetTab || !targetNav) {
+          console.error(`Erro: Tab ID ${tabId} ou Nav ID nav-${tabId} não encontrado.`);
+          return; 
+      }
+
+      targetTab.classList.add('active');
+      targetNav.classList.add('active');
+
+      // Chamada de renderização da lista específica
+      if (tabId === 'products') renderProductList();
+      if (tabId === 'quiz') renderQuizList();
+      if (tabId === 'resgates') renderResgateList();
+    }
+    
+    function renderProductList() {
+        if (!productListBody) return; // Checagem de segurança
+        productListBody.innerHTML = products.map((p, index) => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.name}</td>
+                <td><span class="tag-style">${p.tag}</span></td>
+                <td>R$ ${p.priceNew}</td>
+                <td>
+                    <button class="action-button secondary-button" style="padding: 6px 10px; font-size: 14px;" onclick="deleteProduct(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderQuizList() {
+        if (!quizListBody) return; // Checagem de segurança
+        quizListBody.innerHTML = ufvQuizData.map((q, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${q.question.substring(0, 70)}...</td>
+                <td>${currentCorrectOptions[q.correctIndex]}</td>
+            </tr>
+        `).join('');
+    }
+    
+    function renderResgateList() {
+        if (!resgateListBody) return; // Checagem de segurança
+        resgateListBody.innerHTML = resgatesHistory.map(r => `
+            <tr>
+                <td>${r.date}</td>
+                <td>${r.cpf}</td>
+                <td>${r.premio}</td>
+                <td>${r.cost}</td>
+                <td>${r.voucher}</td>
+            </tr>
+        `).join('');
+    }
+    
+    // --- Funções CRUD Simples ---
+
+    function addProduct() {
+        const name = document.getElementById('product-name').value;
+        const tag = document.getElementById('product-tag').value;
+        const priceNew = document.getElementById('product-price-new').value;
+        const priceOld = document.getElementById('product-price-old').value;
+        const img = document.getElementById('product-img').value;
+        const desc = document.getElementById('product-desc').value;
+
+        const newId = 'p' + (products.length + 1);
+        products.push({ id: newId, name, tag, priceNew, priceOld, img, desc });
+
+        document.getElementById('product-form').reset();
+        renderProductList();
+        alert(`Produto '${name}' adicionado com sucesso!`);
+    }
+
+    function deleteProduct(index) {
+        if (confirm(`Tem certeza que deseja excluir o produto: ${products[index].name}?`)) {
+            products.splice(index, 1);
+            renderProductList();
+        }
+    }
+
+    function addQuizQuestion() {
+        const question = document.getElementById('quiz-question').value;
+        const optA = document.getElementById('quiz-option-A').value;
+        const optB = document.getElementById('quiz-option-B').value;
+        const optC = document.getElementById('quiz-option-C').value;
+        const optD = document.getElementById('quiz-option-D').value;
+        const correctIndex = parseInt(document.getElementById('quiz-correct-index').value);
+
+        const newOptions = [optA, optB, optC, optD];
+        ufvQuizData.push({ question: question, options: newOptions, correctIndex: correctIndex });
+
+        document.getElementById('quiz-form').reset();
+        renderQuizList();
+        alert(`Pergunta #${ufvQuizData.length} adicionada com sucesso!`);
+    }
+
+
+    // --- Inicialização ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inicializa as listas, mesmo que não estejam visíveis
+        renderProductList();
+        renderQuizList();
+        renderResgateList();
+
+        // O login screen está ativo por padrão no HTML. Nenhuma ação necessária aqui.
+    });
+
+  </script>
+</body>
+</html>
